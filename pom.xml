@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.vizarce</groupId>
+	<artifactId>vizarce-connector</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>mule-extension</packaging>
+
+	<name>VIZARCE Connector</name>
+	<description>
+	Custom Anypoint Connector for VIZARCE — an AI prompt engineering studio for Suno/AI Songmaker
+	platforms. Wraps VIZARCE's production REST API (compose, lyrics generation, Artist DNA, section
+	regeneration, and AI-driven song structure generation) as first-class Mule SDK operations.
+  </description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+		<mule.sdk.api.version>0.9.0</mule.sdk.api.version>
+		<mule.api.version>1.9.5</mule.api.version>
+		<jackson.version>2.17.1</jackson.version>
+		<junit.version>4.13.2</junit.version>
+		<mockito.version>4.11.0</mockito.version>
+	</properties>
+
+	<parent>
+		<groupId>org.mule.extensions</groupId>
+		<artifactId>mule-modules-parent</artifactId>
+		<version>1.7.0</version>
+	</parent>
+
+	<dependencies>
+		<!-- Mule SDK -->
+		<dependency>
+			<groupId>org.mule.sdk</groupId>
+			<artifactId>mule-sdk-api</artifactId>
+			<version>${mule.sdk.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.runtime</groupId>
+			<artifactId>mule-api</artifactId>
+			<version>${mule.api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- JSON (de)serialization for the VIZARCE REST payloads -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mule.runtime.plugins</groupId>
+				<artifactId>mule-extensions-maven-plugin</artifactId>
+				<version>1.7.0</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>https://repository.mulesoft.org/releases/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange V3</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+</project>
