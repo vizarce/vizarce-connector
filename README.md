@@ -12,6 +12,9 @@ VIZARCE is an AI prompt engineering studio for Suno/AI Songmaker platforms. This
 connector exposes five of its API endpoints so a Mule integration flow can drive
 AI music-prompt generation as one step in a larger enterprise orchestration.
 
+See [`exchange-docs/`](exchange-docs/home.md) for the listing page content published
+alongside this connector on Anypoint Exchange.
+
 ## Operations
 
 | Operation           | VIZARCE endpoint                         | Purpose                                                          |
