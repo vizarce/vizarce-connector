@@ -19,7 +19,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
-		<mule.sdk.api.version>0.9.0</mule.sdk.api.version>
+		<mule.sdk.api.version>0.10.1</mule.sdk.api.version>
 		<mule.api.version>1.9.5</mule.api.version>
 		<jackson.version>2.17.1</jackson.version>
 		<junit.version>4.13.2</junit.version>

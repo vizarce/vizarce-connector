@@ -4,6 +4,8 @@ import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.dsl.xml.Xml;
 import org.mule.runtime.extension.api.annotation.error.ErrorTypes;
+import org.mule.sdk.api.annotation.JavaVersionSupport;
+import org.mule.sdk.api.meta.JavaVersion;
 
 import com.vizarce.connector.internal.error.VizarceErrorType;
 
@@ -22,5 +24,6 @@ import com.vizarce.connector.internal.error.VizarceErrorType;
 @Extension(name = "VIZARCE")
 @Configurations(VizarceConfiguration.class)
 @ErrorTypes(VizarceErrorType.class)
+@JavaVersionSupport({JavaVersion.JAVA_8, JavaVersion.JAVA_11, JavaVersion.JAVA_17})
 public class VizarceConnector {
 }
