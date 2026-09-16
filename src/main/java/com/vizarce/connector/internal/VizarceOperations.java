@@ -3,10 +3,13 @@ package com.vizarce.connector.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vizarce.connector.internal.error.VizarceErrorTypeProvider;
 import com.vizarce.connector.internal.error.VizarceErrors;
+import com.vizarce.connector.internal.model.AnnotateStressResult;
 import com.vizarce.connector.internal.model.ArtistDnaResult;
 import com.vizarce.connector.internal.model.ComposeSongResult;
+import com.vizarce.connector.internal.model.FillStructureTagsResult;
 import com.vizarce.connector.internal.model.GenerateLyricsResult;
 import com.vizarce.connector.internal.model.GenerateStructureResult;
+import com.vizarce.connector.internal.model.RefineResult;
 import com.vizarce.connector.internal.model.RegenerateSectionResult;
 
 import org.mule.runtime.extension.api.annotation.error.Throws;
@@ -19,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The five operations this connector exposes. Each is a thin wrapper: build the JSON
+ * The eight operations this connector exposes. Each is a thin wrapper: build the JSON
  * request body, POST it via the shared {@link VizarceConnection}, and deserialize the
  * typed result — the actual AI generation logic lives entirely in VIZARCE's backend,
  * this connector's job is purely transport + typed mapping + error translation.
@@ -130,8 +133,74 @@ public class VizarceOperations {
     return execute(connection, "/generate-structure-from-concept", body, timeoutSeconds, GenerateStructureResult.class);
   }
 
+  /**
+   * Fills in one tag-prompt per section for an already-fixed, ordered section list —
+   * distinct from {@link #generateStructure}, which instead chooses the section names
+   * themselves from a free-text concept. Empty/omitted {@code vocalTag}/{@code bassTag}
+   * are legitimate states (instrumental track / no active bass layers respectively),
+   * not missing parameters — VIZARCE's own backend treats them that way, not as
+   * validation errors.
+   */
+  @Throws(VizarceErrorTypeProvider.class)
+  @Summary("Generate one tag-prompt per section of an already-fixed, ordered section list, given genre/BPM/vocal/bass/DNA context.")
+  public FillStructureTagsResult fillStructureTags(@Connection VizarceConnection connection,
+                                                     List<String> sections,
+                                                     String genre,
+                                                     String bpm,
+                                                     @Optional String vocalTag,
+                                                     @Optional String bassTag,
+                                                     @Optional String dnaVocalTag,
+                                                     @Optional String dnaSoundTag,
+                                                     @Optional(defaultValue = "60") int timeoutSeconds) {
+    Map<String, Object> body = new java.util.HashMap<>();
+    body.put("sections", sections);
+    body.put("genre", genre);
+    body.put("bpm", bpm);
+    if (vocalTag != null) body.put("vocalTag", vocalTag);
+    if (bassTag != null) body.put("bassTag", bassTag);
+    if (dnaVocalTag != null) body.put("dnaVocalTag", dnaVocalTag);
+    if (dnaSoundTag != null) body.put("dnaSoundTag", dnaSoundTag);
+
+    return execute(connection, "/generate-structure", body, timeoutSeconds, FillStructureTagsResult.class);
+  }
+
+  /**
+   * Applies one free-text instruction to revise an existing lyrics-prompt or
+   * style-prompt, preserving everything else unchanged. {@code kind} must be either
+   * {@code "lyrics"} or {@code "style"} — for {@code "lyrics"}, VIZARCE runs a
+   * structural safety-net that compares tag-prompt line count and section-header
+   * count before and after the revision, and discards the edit with a 422 if the
+   * song's structure changed; that 422 surfaces through this connector as a plain
+   * {@code VIZARCE:API_ERROR}, like any other non-2xx response — no special-casing
+   * needed given the existing error model already covers it.
+   */
+  @Throws(VizarceErrorTypeProvider.class)
+  @Summary("Revise an existing lyrics-prompt or style-prompt with a free-text instruction. kind must be \"lyrics\" or \"style\".")
+  public RefineResult refineText(@Connection VizarceConnection connection,
+                                   String text,
+                                   String instruction,
+                                   String kind,
+                                   @Optional(defaultValue = "300") int timeoutSeconds) {
+    Map<String, Object> body = Map.of("text", text, "instruction", instruction, "kind", kind);
+    return execute(connection, "/refine", body, timeoutSeconds, RefineResult.class);
+  }
+
+  /**
+   * Inserts Ukrainian stress-accent marks (´) into a lyrics-prompt, for every word
+   * whose stress placement could plausibly be ambiguous or commonly mispronounced.
+   * [Bracketed] tag-prompt directive lines and English text are left untouched.
+   */
+  @Throws(VizarceErrorTypeProvider.class)
+  @Summary("Insert Ukrainian stress-accent marks into a lyrics-prompt, leaving tag-prompt directives and English text untouched.")
+  public AnnotateStressResult annotateStress(@Connection VizarceConnection connection,
+                                               String lyricsPrompt,
+                                               @Optional(defaultValue = "60") int timeoutSeconds) {
+    Map<String, Object> body = Map.of("lyricsPrompt", lyricsPrompt);
+    return execute(connection, "/annotate-stress", body, timeoutSeconds, AnnotateStressResult.class);
+  }
+
   // ---------------------------------------------------------------------------------
-  // Shared execute + error-translation logic — kept in one place so all five
+  // Shared execute + error-translation logic — kept in one place so all eight
   // operations handle connectivity/rate-limiting/API/parse errors identically.
   // ---------------------------------------------------------------------------------
 
