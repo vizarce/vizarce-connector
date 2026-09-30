@@ -96,7 +96,8 @@ public class VizarceOperations {
 
   /**
    * Regenerates a single named section of an already-composed lyrics-prompt in place,
-   * given the full current lyrics-prompt as context.
+   * given the full current lyrics-prompt as context. Calls VIZARCE's consolidated
+   * {@code /structure} endpoint with {@code action: "regenerate-section"}.
    */
   @Throws(VizarceErrorTypeProvider.class)
   @Summary("Regenerate one named section of an existing lyrics-prompt, using the full prompt as context.")
@@ -108,13 +109,14 @@ public class VizarceOperations {
                                                      @Optional String bassTag,
                                                      @Optional(defaultValue = "60") int timeoutSeconds) {
     Map<String, Object> body = new java.util.HashMap<>();
+    body.put("action", "regenerate-section");
     body.put("sectionName", sectionName);
     body.put("fullLyricsPrompt", fullLyricsPrompt);
     body.put("genreTag", genreTag);
     if (vocalTag != null) body.put("vocalTag", vocalTag);
     if (bassTag != null) body.put("bassTag", bassTag);
 
-    return execute(connection, "/regenerate-section", body, timeoutSeconds, RegenerateSectionResult.class);
+    return execute(connection, "/structure", body, timeoutSeconds, RegenerateSectionResult.class);
   }
 
   /**
@@ -122,6 +124,8 @@ public class VizarceOperations {
    * sequence of section names from its full section taxonomy — the caller must supply
    * that valid-names list (VIZARCE keeps it as the frontend's single source of truth,
    * not duplicated server-side), matching how VIZARCE's own web UI calls this endpoint.
+   * Calls VIZARCE's consolidated {@code /structure} endpoint with
+   * {@code action: "from-concept"}.
    */
   @Throws(VizarceErrorTypeProvider.class)
   @Summary("Generate a full song structure (ordered section names) from a free-text style/genre description.")
@@ -129,8 +133,9 @@ public class VizarceOperations {
                                                      String concept,
                                                      List<String> validSectionNames,
                                                      @Optional(defaultValue = "45") int timeoutSeconds) {
-    Map<String, Object> body = Map.of("concept", concept, "validSectionNames", validSectionNames);
-    return execute(connection, "/generate-structure-from-concept", body, timeoutSeconds, GenerateStructureResult.class);
+    Map<String, Object> body = Map.of("action", "from-concept",
+        "concept", concept, "validSectionNames", validSectionNames);
+    return execute(connection, "/structure", body, timeoutSeconds, GenerateStructureResult.class);
   }
 
   /**
@@ -139,7 +144,8 @@ public class VizarceOperations {
    * themselves from a free-text concept. Empty/omitted {@code vocalTag}/{@code bassTag}
    * are legitimate states (instrumental track / no active bass layers respectively),
    * not missing parameters — VIZARCE's own backend treats them that way, not as
-   * validation errors.
+   * validation errors. Calls VIZARCE's consolidated {@code /structure} endpoint with
+   * {@code action: "generate-tags"}.
    */
   @Throws(VizarceErrorTypeProvider.class)
   @Summary("Generate one tag-prompt per section of an already-fixed, ordered section list, given genre/BPM/vocal/bass/DNA context.")
@@ -153,6 +159,7 @@ public class VizarceOperations {
                                                      @Optional String dnaSoundTag,
                                                      @Optional(defaultValue = "60") int timeoutSeconds) {
     Map<String, Object> body = new java.util.HashMap<>();
+    body.put("action", "generate-tags");
     body.put("sections", sections);
     body.put("genre", genre);
     body.put("bpm", bpm);
@@ -161,7 +168,7 @@ public class VizarceOperations {
     if (dnaVocalTag != null) body.put("dnaVocalTag", dnaVocalTag);
     if (dnaSoundTag != null) body.put("dnaSoundTag", dnaSoundTag);
 
-    return execute(connection, "/generate-structure", body, timeoutSeconds, FillStructureTagsResult.class);
+    return execute(connection, "/structure", body, timeoutSeconds, FillStructureTagsResult.class);
   }
 
   /**

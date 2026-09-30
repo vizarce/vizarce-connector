@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
- * Mirrors /api/generate-structure-from-concept's response — an ordered list of section
+ * Mirrors /api/structure's {@code action: "from-concept"} response — an ordered list of section
  * names chosen by the AI from VIZARCE's ALL_SECTIONS taxonomy, already filtered
  * server-side against hallucinated names.
  */

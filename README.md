@@ -22,8 +22,8 @@ alongside this connector on Anypoint Exchange.
 | `composeSong`       | `POST /compose`                          | Full Master Prompt compose (lyrics + style prompt)                |
 | `generateLyrics`     | `POST /generate`                         | Standalone lyrics generation                                      |
 | `buildArtistDNA`     | `POST /artist-dna`                       | Descriptive (name-free) Vocal/Sound DNA for a custom artist        |
-| `regenerateSection`  | `POST /regenerate-section`               | Regenerate one section of an existing lyrics-prompt                |
-| `generateStructure`  | `POST /generate-structure-from-concept`  | AI-generated section-name sequence from a free-text style description |
+| `regenerateSection`  | `POST /structure` (`action: regenerate-section`) | Regenerate one section of an existing lyrics-prompt                |
+| `generateStructure`  | `POST /structure` (`action: from-concept`) | AI-generated section-name sequence from a free-text style description |
 
 ## Architecture notes
 
