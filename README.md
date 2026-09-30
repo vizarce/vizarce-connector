@@ -24,6 +24,9 @@ alongside this connector on Anypoint Exchange.
 | `buildArtistDNA`     | `POST /artist-dna`                       | Descriptive (name-free) Vocal/Sound DNA for a custom artist        |
 | `regenerateSection`  | `POST /structure` (`action: regenerate-section`) | Regenerate one section of an existing lyrics-prompt                |
 | `generateStructure`  | `POST /structure` (`action: from-concept`) | AI-generated section-name sequence from a free-text style description |
+| `fillStructureTags`  | `POST /structure` (`action: generate-tags`) | One tag-prompt per section of an already-fixed section list      |
+| `refineText`         | `POST /text-tools` (`action: refine`)    | Revise a lyrics-prompt or style-prompt with a free-text instruction |
+| `annotateStress`     | `POST /text-tools` (`action: annotate-stress`) | Insert Ukrainian stress-accent marks into a lyrics-prompt     |
 
 ## Architecture notes
 
