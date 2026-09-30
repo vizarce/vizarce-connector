@@ -179,7 +179,8 @@ public class VizarceOperations {
    * count before and after the revision, and discards the edit with a 422 if the
    * song's structure changed; that 422 surfaces through this connector as a plain
    * {@code VIZARCE:API_ERROR}, like any other non-2xx response — no special-casing
-   * needed given the existing error model already covers it.
+   * needed given the existing error model already covers it. Calls VIZARCE's
+   * consolidated {@code /text-tools} endpoint with {@code action: "refine"}.
    */
   @Throws(VizarceErrorTypeProvider.class)
   @Summary("Revise an existing lyrics-prompt or style-prompt with a free-text instruction. kind must be \"lyrics\" or \"style\".")
@@ -188,22 +189,25 @@ public class VizarceOperations {
                                    String instruction,
                                    String kind,
                                    @Optional(defaultValue = "300") int timeoutSeconds) {
-    Map<String, Object> body = Map.of("text", text, "instruction", instruction, "kind", kind);
-    return execute(connection, "/refine", body, timeoutSeconds, RefineResult.class);
+    Map<String, Object> body = Map.of("action", "refine",
+        "text", text, "instruction", instruction, "kind", kind);
+    return execute(connection, "/text-tools", body, timeoutSeconds, RefineResult.class);
   }
 
   /**
    * Inserts Ukrainian stress-accent marks (´) into a lyrics-prompt, for every word
    * whose stress placement could plausibly be ambiguous or commonly mispronounced.
    * [Bracketed] tag-prompt directive lines and English text are left untouched.
+   * Calls VIZARCE's consolidated {@code /text-tools} endpoint with
+   * {@code action: "annotate-stress"}.
    */
   @Throws(VizarceErrorTypeProvider.class)
   @Summary("Insert Ukrainian stress-accent marks into a lyrics-prompt, leaving tag-prompt directives and English text untouched.")
   public AnnotateStressResult annotateStress(@Connection VizarceConnection connection,
                                                String lyricsPrompt,
                                                @Optional(defaultValue = "60") int timeoutSeconds) {
-    Map<String, Object> body = Map.of("lyricsPrompt", lyricsPrompt);
-    return execute(connection, "/annotate-stress", body, timeoutSeconds, AnnotateStressResult.class);
+    Map<String, Object> body = Map.of("action", "annotate-stress", "lyricsPrompt", lyricsPrompt);
+    return execute(connection, "/text-tools", body, timeoutSeconds, AnnotateStressResult.class);
   }
 
   // ---------------------------------------------------------------------------------
