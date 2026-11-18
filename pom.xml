@@ -2,17 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.vizarce</groupId>
+	<groupId>43c5563d-f5fb-4a13-93dc-c496b9324c8a</groupId>
 	<artifactId>vizarce-connector</artifactId>
 	<version>1.1.2</version>
 	<packaging>mule-extension</packaging>
 
 	<name>VIZARCE Connector</name>
-	<description>
-	Custom Anypoint Connector for VIZARCE — an AI prompt engineering studio for Suno/AI Songmaker
-	platforms. Wraps VIZARCE's production REST API (compose, lyrics generation, Artist DNA, section
-	regeneration, and AI-driven song structure generation) as first-class Mule SDK operations.
-  </description>
+	<description>Anypoint Connector for VIZARCE, an AI prompt engineering studio for Suno and other AI music platforms. 8 operations: compose, lyrics, Artist DNA, structure, section regeneration, text refinement, Ukrainian stress marks.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -77,8 +73,38 @@
 				<version>1.7.0</version>
 				<extensions>true</extensions>
 			</plugin>
+			<plugin>
+    			<groupId>org.mule.tools.maven</groupId>
+    			<artifactId>exchange-mule-maven-plugin</artifactId>
+    			<version>0.0.16</version>
+    			<executions>
+        			<execution>
+            			<id>validate</id>
+            			<phase>validate</phase>
+            			<goals>
+                			<goal>exchange-pre-deploy</goal>
+            			</goals>
+        			</execution>
+        			<execution>
+            			<id>deploy</id>
+            			<phase>deploy</phase>
+            			<goals>
+                			<goal>exchange-deploy</goal>
+            			</goals>
+        			</execution>
+    			</executions>
+			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+  			<repository>
+    		<id>anypoint-exchange-v3</id>
+    		<name>Anypoint Exchange</name>
+    		<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/43c5563d-f5fb-4a13-93dc-c496b9324c8a/maven</url>
+    		<layout>default</layout>
+  		</repository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>

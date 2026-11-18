@@ -45,9 +45,9 @@ Dependency for a consuming Mule application:
 
 ```xml
 <dependency>
-    <groupId>com.vizarce</groupId>
+    <groupId>43c5563d-f5fb-4a13-93dc-c496b9324c8a</groupId>
     <artifactId>vizarce-connector</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <classifier>mule-plugin</classifier>
 </dependency>
 ```
